@@ -7,7 +7,7 @@
 
 - Juan Sebastián Florez Payares
 - Juan Esteban Barrera Ortiz
-- Carlos Andres Herrera Molina
+- Carlos Andrés Herrera Molina
 - Luciano Manrique Medina
 
 **Grupo de trabajo: 3**  
