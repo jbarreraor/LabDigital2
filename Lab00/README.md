@@ -25,6 +25,11 @@
     - [Simulación](#simulación)
       - [Evidencias](#evidencias)
     - [Conclusiones](#conclusiones)
+  - [Ejercicio 2: FSM con datapath – Acumulador secuencial](#ejercicio-2-fsm-con-datapath--acumulador-secuencial)
+    - [Diseño implementado](#diseño-implementado-1)
+    - [Simulación](#simulación-1)
+      - [Evidencias](#evidencias-1)
+    - [Conclusiones](#conclusiones-1)
 
 ---
 
