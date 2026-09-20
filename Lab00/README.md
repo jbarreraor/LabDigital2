@@ -166,7 +166,7 @@ Después generamos un ciclo de reloj donde cada flanco dure $5ns$, por lo que su
 always #5 clk = ~clk;
 ```
 
-Antes de simular, configuramos para que el clock empiece en cero, el reset empiece activo, y el tiempo de simulación sea de $400ns$.
+Antes de simular, configuramos para que el clock empiece en cero, el reset empiece en activo, y el tiempo de simulación sea de $400ns$.
 
 ```
 initial begin
@@ -189,7 +189,7 @@ A continuación se muestran las señales de entrada, salida y clock leídas con 
 
 Dentro de las señales observadas tenemos la de ```luz``` que es la que representa al semáforo, también observamos las señales de los colores con el fin de comparar si la secuencia es la correcta.
 
-Podemos ver que el contador se activa en cada flanco positivo de ```clk```. También que el contador va de $0$ hasta $12$ debido a que su periodo es de $10ns$.
+Podemos ver que el ```cont``` se activa en cada flanco positivo de ```clk```. También que el contador va de $1$ hasta $13$ debido a que en ese valor el contador se reinicia. Además, se puede observar un "delay" en los vectores de ```luz``` y ```cont``` debido justamente a que el primer flanco positivo empieza en $5ns$.
 
 Finalmente verificando la señal ```luz``` confirmamos que la secuencia es la deseada: después del reset se activa el verde que se mantiene durante 5 ciclos del clk, luego se activa el amarillo que tiene una duración de 2 ciclos y luego durante 4 ciclos más se activa el rojo, para después pasar a amarillo por 2 ciclos y a verde por 5 ciclos más, y repetir esta secuencia.
 
@@ -198,7 +198,7 @@ Finalmente verificando la señal ```luz``` confirmamos que la secuencia es la de
 
 - Se logró diseñar e implementar una FSM de Moore para controlar por ciclos las luces de un semáforo simple y seguir la secuencia verde-amarillo-rojo-amarillo-verde.
 - Se aprendió que ``` always @(posedge clk)``` se usa para realizar cambios de estado sincronizados al clock.
-- Se implementó un testbench correctamente con el que se pudo verificar el correcto funcionamiento de sistema. También se resalta su importancia, ya que este tipo de simulaciones permiten detectar errores y corregirlos antes de alguna implementación física.
+- Se implementó un testbench correctamente con el que se pudo verificar el correcto funcionamiento de sistema. También se resalta su importancia ya que este tipo de simulaciones permiten detectar errores y corregirlos antes de alguna implementación física.
 
 
 
