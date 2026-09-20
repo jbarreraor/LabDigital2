@@ -201,6 +201,278 @@ Finalmente verificando la señal ```luz``` confirmamos que la secuencia es la de
 - Se implementó un testbench correctamente con el que se pudo verificar el correcto funcionamiento de sistema. También se resalta su importancia ya que este tipo de simulaciones permiten detectar errores y corregirlos antes de alguna implementación física.
 
 
+---
+
+## Ejercicio 2: FSM con datapath – Acumulador secuencial
+
+### Diseño implementado
+
+El objetivo de este ejercicio fue diseñar un acumulador secuencial controlado por una Máquina de Estados Finitos (FSM), capaz de sumar un valor de entrada `x` durante varios ciclos de reloj.
+
+Para integrar las diferentes variantes propuestas en un mismo diseño, se utilizó la entrada `group[1:0]`, que permite seleccionar el tipo de acumulación que se desea realizar. También se agregó la señal `cancel`, que permite cancelar una operación mientras se encuentra en ejecución.
+
+La máquina de estados implementada se muestra a continuación:
+
+![Máquina de estados del acumulador](img/FSM_acumulador.png)
+
+La FSM cuenta con cuatro estados:
+
+- **IDLE:** espera a que se active la señal `start`.
+- **LOAD:** inicializa el acumulador y el contador en cero.
+- **ADD:** realiza la acumulación de `x` de acuerdo con el valor de `group`.
+- **DONE:** indica que la operación terminó y posteriormente regresa a `IDLE`.
+
+Los estados fueron codificados utilizando dos bits:
+
+| Estado | Código |
+| :---: | :---: |
+| IDLE | `00` |
+| LOAD | `01` |
+| ADD | `11` |
+| DONE | `10` |
+
+En [acumulador.v](./Ejercicio2_Acumulador_Secuencial/acumulador.v) se describe el funcionamiento completo del sistema. Inicialmente se definieron las entradas y la salida del acumulador:
+
+```verilog
+module acumulador(
+    input  clk,
+    input  start,
+    input  reset,
+    input  cancel,
+    input  [1:0] group,
+    input  [3:0] x,
+    output reg [5:0] acc
+);
+```
+
+Luego se definieron los registros internos. `cont` se utiliza para contar el número de sumas realizadas y `state` almacena el estado actual de la FSM.
+
+```verilog
+reg [4:0] cont;
+reg [1:0] state;
+
+localparam idle = 2'b00;
+localparam load = 2'b01;
+localparam add  = 2'b11;
+localparam done = 2'b10;
+```
+
+Toda la lógica del sistema se ejecuta en los flancos positivos del reloj mediante:
+
+```verilog
+always @(posedge clk) begin
+```
+
+En caso de activar `reset`, la máquina regresa al estado `idle` y tanto el contador como el acumulador se inicializan en cero.
+
+```verilog
+if (reset) begin
+    state <= idle;
+    cont  <= 0;
+    acc   <= 0;
+end
+```
+
+Cuando el sistema se encuentra en `idle`, espera la señal `start`. Si `start` se activa y no existe una cancelación, la FSM pasa al estado `load`.
+
+```verilog
+if (state==idle && start && !cancel) begin
+    state <= load;
+end
+```
+
+El estado `load` se utiliza para inicializar el acumulador antes de comenzar las operaciones. En este estado `acc` y `cont` se llevan a cero y posteriormente la máquina pasa a `add`.
+
+```verilog
+else if (state==load && !cancel) begin
+    acc   <= 0;
+    cont  <= 0;
+    state <= add;
+end
+```
+
+Por esta razón existe un pequeño retardo entre la activación de `start` y el comienzo de la acumulación. Este comportamiento es intencional, ya que primero se pasa por el estado `LOAD` para garantizar que el acumulador se encuentre inicializado en cero antes de realizar la primera suma.
+
+Una vez en el estado `add`, el funcionamiento depende de `group`. Se utilizaron tres valores para implementar las diferentes variantes del ejercicio:
+
+| `group` | Operación |
+| :---: | :--- |
+| `00` | Sumar `x` 3 veces |
+| `01` | Sumar `x` 4 veces |
+| `11` | Sumar `x` hasta que `acc >= 20` |
+
+Para `group = 00`, el contador permite realizar tres acumulaciones:
+
+```verilog
+else if (state==add && group==2'b00 && !cancel) begin
+    if (cont < 3) begin
+        acc  <= acc + x;
+        cont <= cont + 1;
+    end
+    else begin
+        state <= done;
+    end
+end
+```
+
+Para `group = 01` se utiliza la misma lógica, pero se realizan cuatro acumulaciones:
+
+```verilog
+else if (state==add && group==2'b01 && !cancel) begin
+    if (cont < 4) begin
+        acc  <= acc + x;
+        cont <= cont + 1;
+    end
+    else begin
+        state <= done;
+    end
+end
+```
+
+Finalmente, para `group = 11` no se utiliza un número fijo de sumas. En este caso se continúa acumulando `x` mientras `acc` sea menor que 20.
+
+```verilog
+else if (state==add && group==2'b11 && !cancel) begin
+    if (acc < 20) begin
+        acc <= acc + x;
+    end
+    else begin
+        state <= done;
+    end
+end
+```
+
+También se implementó la señal `cancel`. Si se activa durante los estados `load` o `add`, la operación se interrumpe y la FSM regresa al estado `idle`.
+
+```verilog
+else if (state==load && cancel) begin
+    state <= idle;
+end
+
+else if (state==add && cancel) begin
+    state <= idle;
+end
+```
+
+Cuando una operación termina normalmente, la máquina llega al estado `done` y posteriormente regresa a `idle`, quedando lista para recibir una nueva señal `start`.
+
+```verilog
+else if (state==done) begin
+    state <= idle;
+end
+```
+
+---
+
+### Simulación
+
+Para verificar el funcionamiento de [acumulador.v](./Ejercicio2_Acumulador_Secuencial/acumulador.v) se creó el testbench [tb_acumulador.v](./Ejercicio2_Acumulador_Secuencial/tb_acumulador.v).
+
+Primero se definieron las señales utilizadas en la simulación y se conectaron con el dispositivo bajo prueba (`dut`).
+
+```verilog
+reg        clk, reset, start, cancel;
+reg  [1:0] group;
+reg  [3:0] x;
+wire [5:0] acc;
+
+acumulador dut (
+    .clk(clk),
+    .start(start),
+    .reset(reset),
+    .cancel(cancel),
+    .group(group),
+    .x(x),
+    .acc(acc)
+);
+```
+
+Al igual que en el ejercicio anterior, se generó un reloj con un periodo de $10ns$:
+
+```verilog
+always #5 clk = ~clk;
+```
+
+Al comienzo de la simulación se activa `reset` para garantizar que la FSM inicie en `IDLE` y que el acumulador se encuentre en cero.
+
+```verilog
+clk    = 0;
+reset  = 1;
+start  = 0;
+cancel = 0;
+group  = 2'b00;
+x      = 4'd0;
+
+#12 reset = 0;
+```
+
+Posteriormente se probaron las diferentes condiciones de funcionamiento del acumulador. Para cada operación se configura primero el valor de `x` y `group`, y después se genera un pulso en `start`.
+
+Por ejemplo, para sumar `x = 5` tres veces:
+
+```verilog
+x     = 4'd5;
+group = 2'b00;
+#10 start = 1;
+#10 start = 0;
+#60;
+```
+
+El testbench también verifica los casos de cuatro acumulaciones, acumulación hasta alcanzar 20 y la cancelación de una operación en ejecución.
+
+#### Evidencias
+
+A continuación se muestran las señales obtenidas mediante GTKWave:
+
+![Simulación del acumulador en GTKWave](img/acumulador_gtk.png)
+
+En la simulación se pueden observar las señales externas `start`, `reset`, `cancel`, `group`, `x` y `acc`, además de las señales internas `state` y `cont`, que permiten verificar las transiciones de la FSM y el número de acumulaciones realizadas.
+
+En el **primer caso**, se utiliza `group = 00` y `x = 5`. Después de `start`, la FSM pasa por los estados `IDLE → LOAD → ADD`. Una vez inicializado el acumulador, se realizan tres sumas:
+
+```text
+0 → 5 → 10 → 15
+```
+
+Por lo tanto, el resultado final es `acc = 15`.
+
+En el **segundo caso**, se utiliza `group = 01` y `x = 3`, por lo que se realizan cuatro sumas:
+
+```text
+0 → 3 → 6 → 9 → 12
+```
+
+El resultado final es `acc = 12`.
+
+En el **tercer caso**, se utiliza `group = 11` y `x = 7`. En este caso el sistema continúa acumulando mientras `acc < 20`:
+
+```text
+0 → 7 → 14 → 21
+```
+
+Al alcanzar 21, se cumple la condición `acc >= 20` y la FSM pasa al estado `DONE`.
+
+En GTKWave los buses se encuentran representados en hexadecimal, por lo que para este caso los valores de `acc` aparecen como `00 → 07 → 0E → 15`, siendo `15` hexadecimal equivalente a 21 decimal.
+
+Finalmente, se prueba la señal `cancel` utilizando `group = 00` y `x = 2`. La acumulación comienza normalmente, pero al activar `cancel` durante el estado `ADD`, la FSM interrumpe la operación y regresa directamente al estado `IDLE`.
+
+La señal `state` permite comprobar las transiciones entre los estados definidos:
+
+```text
+IDLE (00) → LOAD (01) → ADD (11) → DONE (10) → IDLE (00)
+```
+
+De esta forma se verificó tanto el funcionamiento del datapath encargado de realizar las acumulaciones como el funcionamiento de la FSM encargada de controlar cada operación.
+
+---
+
+### Conclusiones
+
+- Se implementó una FSM de cuatro estados para controlar un acumulador secuencial, separando el control de la operación de acumulación realizada sobre `acc`.
+- El estado `LOAD` permite inicializar el acumulador y el contador antes de realizar la primera suma, generando de manera intencional un ciclo de preparación entre `start` y el comienzo de la acumulación.
+- Mediante la entrada `group` fue posible integrar en un mismo módulo las diferentes condiciones de acumulación propuestas en el ejercicio.
+- La simulación en GTKWave permitió comprobar las transiciones entre `IDLE`, `LOAD`, `ADD` y `DONE`, así como verificar los resultados de las acumulaciones y el funcionamiento de la señal `cancel`.
+
 
 
 
