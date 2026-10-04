@@ -144,33 +144,48 @@ Finalmente en la simulación se recorre estos casos en orden: reset, OR, AND, en
 
 ### Restricciones de pines (XDC)
 
-En [Zybo-Z7_IMPANDOR_actualizado.xdc](src/Zybo-Z7_IMPANDOR_actualizado.xdc) se asignaron los pines de la placa Zybo Z7 y la definición del clock. A continuación en la tabla mostramos un resumen de este proceso:
+En [Zybo-Z7_IMPANDOR_actualizado.xdc](src/Zybo-Z7_IMPANDOR_actualizado.xdc) se realizó la asignación de los pines utilizados en la tarjeta **Zybo Z7**. En este archivo se relacionan las entradas y salidas definidas en Verilog con los elementos físicos de la tarjeta, como los switches, pulsadores, LEDs y el puerto Pmod JD.
 
-| Puerto | Pines FPGA | Recurso en la placa |
-|---|---|---|
-| `clk` | K17 | Reloj del sistema (125 MHz) |
-| `a[3:0]` | G15, P15, W13, T16 | Interruptores SW0–SW3 |
-| `sw[3:0]` | K18, P16, K19, Y16 | Pulsadores BTN0–BTN3 |
-| `andd` | T14 | Pmod JD |
-| `orr` | T15 | Pmod JD |
-| `reset` | P14 | Pmod JD |
-| `y[3:0]` | M14, M15, G14, D18 | LEDs LD0–LD3 |
-| `led[2:0]` | V16, F17, M17 | LED RGB LED6 |
+La asignación utilizada durante la implementación se muestra en la siguiente tabla:
 
-Para la implementación física se usó un circuito con resistencia pull up activado por un switch de dos bits. las conexiones se hicieron con base en este esquema.
+| Señal | Pin FPGA | Recurso en la placa | Función |
+| :--- | :--- | :--- | :--- |
+| `clk` | K17 | Reloj del sistema | Reloj de 125 MHz |
+| `a[0]` | G15 | SW0 | Bit 0 del primer operando |
+| `a[1]` | P15 | SW1 | Bit 1 del primer operando |
+| `a[2]` | W13 | SW2 | Bit 2 del primer operando |
+| `a[3]` | T16 | SW3 | Bit 3 del primer operando |
+| `sw[0]` | K18 | BTN0 | Bit 0 del segundo operando |
+| `sw[1]` | P16 | BTN1 | Bit 1 del segundo operando |
+| `sw[2]` | K19 | BTN2 | Bit 2 del segundo operando |
+| `sw[3]` | Y16 | BTN3 | Bit 3 del segundo operando |
+| `andd` | T14 | Pmod JD0 | Selección de operación AND |
+| `orr` | T15 | Pmod JD1 | Selección de operación OR |
+| `reset` | P14 | Pmod JD2 | Reset del sistema |
+| `y[0]` | M14 | LED LD0 | Bit 0 del resultado |
+| `y[1]` | M15 | LED LD1 | Bit 1 del resultado |
+| `y[2]` | G14 | LED LD2 | Bit 2 del resultado |
+| `y[3]` | D18 | LED LD3 | Bit 3 del resultado |
+| `led[0]` | V16 | LED6 - Rojo | Canal rojo del LED RGB |
+| `led[1]` | F17 | LED6 - Verde | Canal verde del LED RGB |
+| `led[2]` | M17 | LED6 - Azul | Canal azul del LED RGB |
+
+Los cuatro switches `SW0-SW3` se utilizaron para formar el primer operando de 4 bits (`a`), mientras que los cuatro pulsadores `BTN0-BTN3` conformaron el segundo operando (`sw`). Los LEDs `LD0-LD3` permitieron observar directamente los cuatro bits del resultado.
+
+Por otra parte, mediante el puerto **Pmod JD** se conectaron las señales externas utilizadas para seleccionar las operaciones AND y OR, además de la señal de reset. Los switches externos se conectaron utilizando la configuración *pull-up* explicada anteriormente.
+
+Para la implementación física se utilizó el siguiente esquema de conexiones:
 
 ![Diagrama de conexiones y recursos de la placa Zybo Z7](img/pines_fpgs_Z7.png)
 
-**Fig. 1.** Diagrama de conexiones y recursos de la placa Zybo Z7. Tomado de [1].
-
-***Coloque los pines que se usaron si en la tabla no están***
+**Fig. 1.** Diagrama de conexiones y recursos utilizados de la placa Zybo Z7. Tomado de [1].
 
 
 ### Evidencias
 
-A continuación se observa un video con el diseño implementado durante la clase de laboratorio.
+A continuación se presenta un video del funcionamiento del diseño implementado físicamente en la tarjeta **Zybo Z7**. En este se observa el uso de los switches y pulsadores como entradas, los LEDs para mostrar el resultado de las operaciones y el LED RGB para indicar el estado actual del sistema.
 
-**ACÁ ponga el video** 
+[Video de la implementación en la Zybo Z7](img/Lab1video.mp4)
 
 
 ---
