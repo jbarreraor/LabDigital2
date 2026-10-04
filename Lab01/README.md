@@ -154,6 +154,7 @@ En [Zybo-Z7_IMPANDOR_actualizado.xdc](src/Zybo-Z7_IMPANDOR_actualizado.xdc) se a
 Para la implementación física se usó un circuito con resistencia pull up activado por un switch de dos bits. las conexiones se hicieron con base en este esquema.
 
 ![alt](img/pines_fpgs_Z7.png)
+Imagen sacada de : https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual?srsltid=AU7gw4WxIn3yh2F91W5TZy80-yg-dRxwBVYFatZKzvhgQcG5f6ykeki2
 
 ***Coloque los pines que se usaron si en la tabla no están***
 
