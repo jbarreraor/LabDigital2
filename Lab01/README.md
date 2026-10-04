@@ -23,7 +23,7 @@
   - [Ejercicio 1: Verificación Del Entorno En FPGA (Smoke Test)](#ejercicio-1-verificación-del-entorno-en-fpga-smoke-test)
   - [Ejercicio 2: Test Funcional Personalizado (Diseño libre)](#ejercicio-2-test-funcional-personalizado-diseño-libre)
     - [Diseño implementado](#diseño-implementado)
-    - [¿Por qué no usamos los pulsadores que esta en la FPGA?](#por-qué-no-usamos-los-pulsadores-que-esta-en-la-fpga)
+    - [¿Por qué no usamos los pulsadores que están en la FPGA?](#por-qué-no-usamos-los-pulsadores-que-están-en-la-fpga)
     - [Simulaciones](#simulaciones)
   - [Restricciones de pines (XDC)](#restricciones-de-pines-xdc)
     - [Evidencias](#evidencias)
@@ -54,7 +54,7 @@ Donde `andd` y `orr` son los bits encargados de definir cada uno de los casos, y
 Es importante resaltar que los nombres `andd` y `orr` fueron escritos de esa manera debido que las palabras `and` y `or` son reservadas para la lógica de verilog.
 
 ---
-### ¿Por qué no usamos los pulsadores que esta en la FPGA?
+### ¿Por qué no usamos los pulsadores que están en la FPGA?
 
 PONGA LA EXPLICACIÓN ACÁ
 
