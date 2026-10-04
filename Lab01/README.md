@@ -58,7 +58,11 @@ Es importante resaltar que los nombres `andd` y `orr` fueron escritos de esa man
 ---
 ### ¿Por qué no usamos los pulsadores que están en la FPGA?
 
-PONGA LA EXPLICACIÓN ACÁ
+La tarjeta Zybo Z7 cuenta con seis pulsadores; sin embargo, solo cuatro de ellos (BTN0 a BTN3) están conectados directamente a la parte programable de la FPGA. Los otros dos pulsadores (BTN4 y BTN5) están asociados directamente al procesador de la tarjeta, por medio de los pines MIO50 y MIO51. Por esta razón, estos dos pulsadores no se podían utilizar de la misma manera que los demás mediante una asignación de pines en el archivo .xdc.
+
+Debido a esto, para completar las entradas necesarias en el ejercicio se utilizaron switches externos conectados a la FPGA por medio del puerto Pmod JD. Para realizar estas conexiones se utilizó una configuración pull-up, evitando que las entradas quedaran en un estado indefinido cuando los switches estuvieran abiertos.
+
+Con esta configuración, cuando un switch se encuentra abierto la resistencia pull-up mantiene la entrada en un nivel lógico alto (1), mientras que al cerrar el switch la entrada se conecta a tierra y pasa a un nivel lógico bajo (0). De esta manera fue posible agregar las entradas necesarias al diseño sin tener que utilizar los pulsadores asociados al procesador.
 
 ---
 
