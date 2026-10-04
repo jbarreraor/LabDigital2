@@ -34,9 +34,6 @@
 ---
 
 
-## Ejercicio 1: Verificación Del Entorno En FPGA (Smoke Test)
-
-
 ## Ejercicio 2: Test Funcional Personalizado (Diseño libre)
 
 ### Diseño implementado
@@ -190,10 +187,140 @@ A continuación se presenta un video del funcionamiento del diseño implementado
 
 ---
 
+
+### Corrección y ampliación del diseño
+
+Después de finalizar la práctica y revisar nuevamente los requisitos establecidos en la guía del laboratorio, se identificó que el diseño presentado inicialmente implementaba las operaciones lógicas **AND** y **OR**, pero faltaba incluir la operación **XOR** y una operación aritmética.
+
+Durante la sesión de laboratorio el funcionamiento del diseño original fue presentado y revisado. Sin embargo, posteriormente se identificó este requisito faltante, por lo que se realizó una ampliación del código conservando la misma estructura utilizada inicialmente.
+
+Para esta nueva versión se mantuvieron las mismas entradas y salidas del diseño original, así como el uso del reloj, el reset y la máquina de estados. Los operandos continúan siendo:
+
+- `a[3:0]`: primer operando de 4 bits, ingresado mediante los switches `SW0-SW3`.
+- `sw[3:0]`: segundo operando de 4 bits, ingresado mediante los pulsadores `BTN0-BTN3`.
+
+También se conservaron las señales externas `andd` y `orr`. En el diseño original estas señales permitían seleccionar únicamente las operaciones AND y OR, mientras que las combinaciones `00` y `11` llevaban el sistema al estado apagado. En la versión ampliada se aprovecharon estas dos combinaciones para agregar las operaciones que hacían falta.
+
+La nueva selección de operaciones quedó definida de la siguiente manera:
+
+| `andd` | `orr` | Estado | Operación | Resultado `y[3:0]` |
+| :---: | :---: | :--- | :--- | :--- |
+| 0 | 0 | `SUM_ST` | SUMA | `a + sw` |
+| 0 | 1 | `OR_ST` | OR | `a \| sw` |
+| 1 | 0 | `AND_ST` | AND | `a & sw` |
+| 1 | 1 | `XOR_ST` | XOR | `a ^ sw` |
+
+El estado `OFF_ST` se mantuvo en el diseño y se utiliza cuando se activa la señal de `reset`. De esta manera fue posible agregar las nuevas operaciones sin modificar las entradas y salidas utilizadas originalmente ni la asignación física de pines.
+
+#### Código ampliado
+
+Para conservar el código presentado originalmente durante la práctica, la ampliación se realizó en un archivo independiente:
+
+[`OperacionImplementacioncorregido.v`](src/OperacionImplementacioncorregido.v)
+
+En esta versión se agregaron los estados `SUM_ST` y `XOR_ST` a la máquina de estados original:
+
+```verilog
+// Estados
+localparam OFF_ST = 3'b000;
+localparam SUM_ST = 3'b001;
+localparam OR_ST  = 3'b010;
+localparam AND_ST = 3'b011;
+localparam XOR_ST = 3'b100;
+
+reg [2:0] state = OFF_ST;
+```
+
+La lógica de transición de estados fue ampliada para utilizar las cuatro combinaciones posibles de las señales `andd` y `orr`:
+
+```verilog
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        state <= OFF_ST;
+    end
+    else begin
+        case ({andd, orr})
+            2'b00:   state <= SUM_ST;
+            2'b01:   state <= OR_ST;
+            2'b10:   state <= AND_ST;
+            2'b11:   state <= XOR_ST;
+            default: state <= OFF_ST;
+        endcase
+    end
+end
+```
+
+Finalmente, se agregaron las operaciones de suma y XOR al bloque encargado de generar las salidas:
+
+```verilog
+always @(*) begin
+    case (state)
+
+        SUM_ST: begin
+            y   = a + sw;
+            led = 3'b011;
+        end
+
+        OR_ST: begin
+            y   = a | sw;
+            led = 3'b010;
+        end
+
+        AND_ST: begin
+            y   = a & sw;
+            led = 3'b001;
+        end
+
+        XOR_ST: begin
+            y   = a ^ sw;
+            led = 3'b100;
+        end
+
+        default: begin
+            y   = 4'b0000;
+            led = 3'b000;
+        end
+
+    endcase
+end
+```
+
+Debido a que la salida `y` continúa siendo de 4 bits, en la operación de suma se muestran únicamente los cuatro bits correspondientes al resultado disponible en `y[3:0]`.
+
+#### Verificación de la versión ampliada
+
+Para comprobar el funcionamiento de las operaciones agregadas también se realizó una nueva versión del testbench:
+
+[`tb_OperacionImplementacioncorregida.v`](src/tb_OperacionImplementacioncorregida.v)
+
+En esta simulación se verificaron individualmente las cuatro operaciones disponibles, además del funcionamiento del reset. Se utilizaron diferentes valores para los operandos con el fin de comprobar los resultados obtenidos.
+
+Por ejemplo, durante la simulación se obtuvieron los siguientes casos:
+
+| Operación | `a` | `sw` | Resultado |
+| :--- | :---: | :---: | :---: |
+| SUMA | `0011` (3) | `0100` (4) | `0111` (7) |
+| OR | `1100` (C) | `1010` (A) | `1110` (E) |
+| AND | `1100` (C) | `1010` (A) | `1000` (8) |
+| XOR | `1100` (C) | `1010` (A) | `0110` (6) |
+
+La siguiente figura muestra la simulación obtenida en GTKWave. En ella se puede observar el cambio de las señales de selección y los resultados correspondientes a las operaciones de SUMA, OR, AND y XOR. También se verifica el funcionamiento del reset, que lleva temporalmente la salida a `0000`.
+
+![Simulación de la versión ampliada](img/simulacioncorregida.jpeg)
+
+**Fig. 2.** Simulación en GTKWave de la versión ampliada con las operaciones SUMA, OR, AND y XOR.
+
+> **Nota:** Esta ampliación fue realizada después de la sesión de laboratorio, al revisar nuevamente los requisitos indicados en la guía. Por esta razón, el video presentado en la sección de evidencias corresponde al diseño original implementado durante la práctica. La versión ampliada fue verificada mediante simulación, pero no se cuenta con una grabación de su implementación física en la tarjeta Zybo Z7.
+
+---
+
 ## Conclusiones
 
-- Moraleja
+- Durante el desarrollo del laboratorio se logró comprender el proceso necesario para llevar un diseño realizado en Verilog desde su simulación hasta la implementación en la FPGA **Zybo Z7**, relacionando las entradas y salidas del código con los diferentes elementos físicos de la tarjeta, como switches, pulsadores y LEDs.
 
+- La implementación de las operaciones **AND, OR, XOR y SUMA** permitió reforzar el manejo de operaciones lógicas y aritméticas utilizando operandos de 4 bits. Además, mediante la simulación en GTKWave fue posible verificar el comportamiento de cada operación y comprobar que los resultados obtenidos correspondieran con los valores esperados.
+
+- Finalmente, la práctica permitió reconocer la importancia de revisar tanto el funcionamiento del diseño como los requisitos establecidos para su implementación. La ampliación realizada posteriormente permitió completar las operaciones faltantes manteniendo la estructura del diseño original y demostrando que un mismo sistema puede ser modificado y ampliado sin necesidad de cambiar completamente su funcionamiento.
 ---
 
 ## Referencias
