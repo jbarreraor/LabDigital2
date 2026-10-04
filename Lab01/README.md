@@ -29,6 +29,7 @@
     - [Restricciones de pines (XDC)](#restricciones-de-pines-xdc)
     - [Evidencias](#evidencias)
   - [Conclusiones](#conclusiones)
+  - [Referencias](#referencias)
 
 ---
 
@@ -154,8 +155,9 @@ En [Zybo-Z7_IMPANDOR_actualizado.xdc](src/Zybo-Z7_IMPANDOR_actualizado.xdc) se a
 
 Para la implementación física se usó un circuito con resistencia pull up activado por un switch de dos bits. las conexiones se hicieron con base en este esquema.
 
-![alt](img/pines_fpgs_Z7.png)
-Imagen sacada de : https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual?srsltid=AU7gw4WxIn3yh2F91W5TZy80-yg-dRxwBVYFatZKzvhgQcG5f6ykeki2
+![Diagrama de conexiones y recursos de la placa Zybo Z7](img/pines_fpgs_Z7.png)
+
+**Fig. 1.** Diagrama de conexiones y recursos de la placa Zybo Z7. Tomado de [1].
 
 ***Coloque los pines que se usaron si en la tabla no están***
 
@@ -175,4 +177,7 @@ A continuación se observa un video con el diseño implementado durante la clase
 
 ---
 
+## Referencias
+
+[1] Digilent, “Zybo Z7 Reference Manual,” Digilent Inc. [En línea]. Disponible en: https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual.
 
