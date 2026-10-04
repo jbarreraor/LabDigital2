@@ -16,6 +16,7 @@
 ---
 
 ## Índice
+
 - [Laboratorio 01](#laboratorio-01)
   - [Lab01: FPGA (Zybo Z7), Vivado/Vitis y Validación de Hardware](#lab01-fpga-zybo-z7-vivadovitis-y-validación-de-hardware)
   - [Integrantes](#integrantes)
@@ -25,7 +26,7 @@
     - [Diseño implementado](#diseño-implementado)
     - [¿Por qué no usamos los pulsadores que están en la FPGA?](#por-qué-no-usamos-los-pulsadores-que-están-en-la-fpga)
     - [Simulaciones](#simulaciones)
-  - [Restricciones de pines (XDC)](#restricciones-de-pines-xdc)
+    - [Restricciones de pines (XDC)](#restricciones-de-pines-xdc)
     - [Evidencias](#evidencias)
   - [Conclusiones](#conclusiones)
 
@@ -136,7 +137,7 @@ Finalmente en la simulación se recorre estos casos en orden: reset, OR, AND, en
 
 ![alt](img/salida_simu_gtk.jpeg)
 
-## Restricciones de pines (XDC)
+### Restricciones de pines (XDC)
 
 En [Zybo-Z7_IMPANDOR_actualizado.xdc](src/Zybo-Z7_IMPANDOR_actualizado.xdc) se asignaron los pines de la placa Zybo Z7 y la definición del clock. A continuación en la tabla mostramos un resumen de este proceso:
 
