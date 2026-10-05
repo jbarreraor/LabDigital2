@@ -182,7 +182,11 @@ Para la implementación física se utilizó el siguiente esquema de conexiones:
 
 A continuación se presenta un video del funcionamiento del diseño implementado físicamente en la tarjeta **Zybo Z7**. En este se observa el uso de los switches y pulsadores como entradas, los LEDs para mostrar el resultado de las operaciones y el LED RGB para indicar el estado actual del sistema.
 
-[Video de la implementación en la Zybo Z7](img/Lab1video.mp4)
+
+
+https://github.com/user-attachments/assets/9945b0e5-69a6-4778-83fa-43ea8fe3a319
+
+
 
 
 ---
