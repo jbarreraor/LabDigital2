@@ -39,6 +39,7 @@ Para el diseño de la práctica se utilizaron 4 módulos. Primero, el [`sumador.
 En el diagrama se observan primero las entradas por botón: BTN0 cambia el valor de A, BTN1 cambia el valor de B, BTN2 cambia el bit 0 de la selección de operación y BTN3 cambia el bit 1 de la selección. Todas estas señales pasan por el filtro antirrebote antes de entrar a modificar los registros. Además, los valores que se cargan dependen de los switches, que en el código se nombran `X[3:0]` (en el caso de la selección de operación solo intervienen los 2 bits menos significativos de `X`).
 
 Tras entrar al banco de registros, los valores escogidos determinan las salidas. De forma directa, el LED RGB cambia de color de acuerdo con el valor del registro `op`, mientras que los LEDs de salida muestran el resultado de la operación escogida entre A y B, calculado por la ALU con ayuda de las operaciones aritméticas de [`sumador.v`](src/sumador.v).
+
 ---
 ### Explicación de los módulos
 
