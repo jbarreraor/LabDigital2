@@ -99,6 +99,8 @@ Finalmente, al final de la simulación se mantienen constantes los operandos `a 
 | `3` | OR | `13` |
 
 Esta última prueba permite comprobar que el código de operación selecciona correctamente cada una de las funciones de la ALU manteniendo los mismos operandos de entrada. En conjunto, los resultados observados coinciden con el comportamiento esperado para las cuatro operaciones implementadas.
+
+
 ---
 
 ## Implementación en FPGA
@@ -114,14 +116,21 @@ Para evitar que los rebotes mecánicos de los pulsadores generen múltiples regi
 A continuación se presenta un video del funcionamiento del diseño implementado físicamente en la tarjeta **Zybo Z7**. En este se observa el ingreso y almacenamiento de los operandos mediante los switches y pulsadores, la selección de las diferentes operaciones de la ALU, la visualización del resultado mediante los LEDs y el cambio de color del LED RGB de acuerdo con la operación seleccionada.
 
 
+
+https://github.com/user-attachments/assets/3f3569e4-6894-4336-ad09-5f5430d34856
+
+
+
 ---
 
 ## Conclusiones
 
-- Principales aprendizajes del laboratorio.
-- Dificultades encontradas durante el desarrollo.
-- Importancia de la simulación y verificación antes de la implementación física.
+- La implementación de la ALU de 4 bits permitió integrar operaciones aritméticas y lógicas dentro de un mismo sistema, utilizando un código de operación de 2 bits para seleccionar entre suma, resta, AND y OR.
 
+- La simulación mediante Icarus Verilog y GTKWave permitió verificar el comportamiento del diseño antes de implementarlo en la FPGA, incluyendo casos particulares como el desbordamiento en la suma debido a que la salida está limitada a 4 bits.
+
+- La implementación en la Zybo Z7 permitió comprobar el funcionamiento del diseño en hardware, utilizando switches y pulsadores para ingresar y almacenar los datos, LEDs para visualizar el resultado y un LED RGB para identificar la operación seleccionada.
+  
 ---
 
 ## Referencias
