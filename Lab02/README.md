@@ -126,11 +126,6 @@ assign out = (op == 2'b00) ? suma  :
 
 ## Almacenamiento de operandos y código de operación
 
-En esta sección se explica cómo se ingresan y almacenan los operandos A y B,
-así como la forma en que se conserva el código de operación seleccionado.
-
-## Almacenamiento de operandos y código de operación
-
 En esta sección se explica cómo se ingresan y almacenan los operandos A y B, así como la forma en que se conserva el código de operación seleccionado.
 
 ### Entradas
