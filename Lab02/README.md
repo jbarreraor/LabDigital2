@@ -288,3 +288,5 @@ https://github.com/user-attachments/assets/3f3569e4-6894-4336-ad09-5f5430d34856
 ---
 
 ## Referencias
+
+[1] Digilent, “Zybo Z7 Reference Manual,” Digilent Inc. [En línea]. Disponible en: https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual.
