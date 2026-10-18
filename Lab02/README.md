@@ -30,9 +30,15 @@
 
 ## Diseño implementado
 
-En esta sección se presenta el funcionamiento general de la ALU de 4 bits, 
-la arquitectura propuesta y los módulos desarrollados.
+Para el diseño de la práctica se utilizaron 4 módulos. Primero, el [`sumador.v`](src/sumador.v), que contiene las operaciones aritméticas básicas de la ALU. Luego está [`alu.v`](src/alu.v), donde se condensan estas operaciones junto con el AND y el OR lógicos. El tercer módulo es [`antir.v`](src/antir.v), que, como su nombre lo indica, se encarga de controlar el efecto rebote. Por último, todos los módulos son instanciados en [`lab2.v`](src/lab2.v), que es el módulo top.
 
+<a id="figura-1"></a>
+![Diagrama de bloques de la arquitectura de la ALU](sim/img/arquitectura.png)
+*Figura 1. Diagrama de bloques de la arquitectura propuesta.*
+
+En el diagrama se observan primero las entradas por botón: BTN0 cambia el valor de A, BTN1 cambia el valor de B, BTN2 cambia el bit 0 de la selección de operación y BTN3 cambia el bit 1 de la selección. Todas estas señales pasan por el filtro antirrebote antes de entrar a modificar los registros. Además, los valores que se cargan dependen de los switches, que en el código se nombran `X[3:0]` (en el caso de la selección de operación solo intervienen los 2 bits menos significativos de `X`).
+
+Tras entrar al banco de registros, los valores escogidos determinan las salidas. De forma directa, el LED RGB cambia de color de acuerdo con el valor del registro `op`, mientras que los LEDs de salida muestran el resultado de la operación escogida entre A y B, calculado por la ALU con ayuda de las operaciones aritméticas de [`sumador.v`](src/sumador.v).
 ---
 
 ## Operaciones implementadas
