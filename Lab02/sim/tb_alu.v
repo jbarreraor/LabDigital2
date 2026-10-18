@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "alu.v"
+`include "../src/alu.v"
 
 module tb_alu;
     reg  [3:0] a, b;
@@ -9,7 +9,7 @@ module tb_alu;
     alu uut (.a(a), .b(b), .op(op), .out(out));
 
     initial begin
-        $dumpfile("tb_alu.vcd");
+        $dumpfile("sim/tb_alu.vcd");
         $dumpvars(0, tb_alu);
 
         // ---------- SUMA (00) ----------
