@@ -40,7 +40,89 @@ la arquitectura propuesta y los módulos desarrollados.
 En esta sección se presentan las operaciones aritméticas y lógicas implementadas
 en la ALU y sus respectivos códigos de operación.
 
----
+### Suma (`op = 00`)
+
+Usa el sumador de 4 bits en cascada, formado por cuatro sumadores completos. Cada `cout` se conecta al `cin` de la etapa siguiente.
+
+```verilog
+module sumador1(
+    input a, b, cin,
+    output sum, cout
+);
+    assign sum  = a ^ b ^ cin;
+    assign cout = (a & b) | (cin & (a ^ b));
+endmodule
+
+module sumador4(
+    input [3:0] a, b,
+    input cin,
+    output [3:0] sum,
+    output cout
+);
+    wire co1, co2, co3;
+
+    sumador1 s1 (.a(a[0]), .b(b[0]), .cin(cin), .sum(sum[0]), .cout(co1));
+    sumador1 s2 (.a(a[1]), .b(b[1]), .cin(co1), .sum(sum[1]), .cout(co2));
+    sumador1 s3 (.a(a[2]), .b(b[2]), .cin(co2), .sum(sum[2]), .cout(co3));
+    sumador1 s4 (.a(a[3]), .b(b[3]), .cin(co3), .sum(sum[3]), .cout(cout));
+endmodule
+```
+
+En la ALU se instancia con `cin = 0`:
+
+```verilog
+sumador4 sumalab2 (.a(a), .b(b), .cin(1'b0), .sum(suma), .cout());
+```
+
+### Resta (`op = 01`)
+
+Se implementa en complemento a 2 como `A + ~B + 1`, reutilizando el sumador:
+
+```verilog
+module restador(
+    input [3:0] a, b,
+    output [3:0] resta
+);
+    sumador4 resta1 (.a(a), .b(~b), .cin(1'b1), .sum(resta), .cout());
+endmodule
+```
+
+La ALU calcula `A - B` y `B - A` en paralelo, y un comparador selecciona la diferencia del mayor menos el menor:
+
+```verilog
+restador restalab2  (.a(a), .b(b), .resta(resta1));   // A - B
+restador restalab22 (.a(b), .b(a), .resta(resta2));   // B - A
+
+assign a_ge_b = (a >= b);
+assign resta  = a_ge_b ? resta1 : resta2;             // |A - B|
+```
+
+### AND (`op = 10`)
+
+Se aplica bit a bit entre los operandos:
+
+```verilog
+(a & b)
+```
+
+### OR (`op = 11`)
+
+Se aplica bit a bit entre los operandos:
+
+```verilog
+(a | b)
+```
+
+### Selección de la operación
+
+El código `op` elige cuál de los resultados llega a la salida:
+
+```verilog
+assign out = (op == 2'b00) ? suma  :
+             (op == 2'b01) ? resta :
+             (op == 2'b10) ? (a & b) :
+                             (a | b);   // op == 2'b11
+```
 
 ## Almacenamiento de operandos y código de operación
 
