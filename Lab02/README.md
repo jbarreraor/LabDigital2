@@ -129,7 +129,68 @@ assign out = (op == 2'b00) ? suma  :
 En esta sección se explica cómo se ingresan y almacenan los operandos A y B,
 así como la forma en que se conserva el código de operación seleccionado.
 
----
+## Almacenamiento de operandos y código de operación
+
+En esta sección se explica cómo se ingresan y almacenan los operandos A y B, así como la forma en que se conserva el código de operación seleccionado.
+
+### Entradas
+
+Los valores se ingresan con los switches `X[3:0]` y se guardan al pulsar un botón. Cada botón pasa por un módulo de antirrebote que entrega un pulso (`pA`, `pB`, `pOp0`, `pOp1`) cuando se presiona.
+
+```verilog
+input  guardarA,        // BTN0
+input  guardarB,        // BTN1
+input  opBit0,          // BTN2
+input  opBit1,          // BTN3
+input  [3:0] X,         // switches
+
+antirebote dbA   (.clk(clk), .btn(guardarA), .pulso(pA));
+antirebote dbB   (.clk(clk), .btn(guardarB), .pulso(pB));
+antirebote dbOp0 (.clk(clk), .btn(opBit0),   .pulso(pOp0));
+antirebote dbOp1 (.clk(clk), .btn(opBit1),   .pulso(pOp1));
+```
+
+### Registros
+
+Los operandos y el código de operación se conservan en registros, inicializados en cero:
+
+```verilog
+reg [3:0] a  = 4'b0000;   // operando A
+reg [3:0] b  = 4'b0000;   // operando B
+reg [1:0] op = 2'b00;     // código de operación
+```
+
+### Almacenamiento
+
+En cada flanco de subida del reloj, si hay pulso de un botón, se carga el valor de los switches en el registro correspondiente:
+
+```verilog
+always @(posedge clk) begin
+    if (pA)   a     <= X;      // BTN0: guarda A = X[3:0]
+    if (pB)   b     <= X;      // BTN1: guarda B = X[3:0]
+    if (pOp0) op[0] <= X[0];   // BTN2: guarda op[0] = X[0]
+    if (pOp1) op[1] <= X[1];   // BTN3: guarda op[1] = X[1]
+end
+```
+
+Los valores se conservan hasta que se vuelve a pulsar el botón correspondiente, por lo que mover los switches después de guardar no modifica `a`, `b` ni `op`.
+
+### Procedimiento de uso
+
+| Paso | Switches `X` | Botón | Efecto |
+|:----:|:------------:|:-----:|--------|
+| 1 | Valor de A (4 bits) | BTN0 | Se guarda A |
+| 2 | Valor de B (4 bits) | BTN1 | Se guarda B |
+| 3 | `X[0]` = bit 0 del código | BTN2 | Se guarda `op[0]` |
+| 4 | `X[1]` = bit 1 del código | BTN3 | Se guarda `op[1]` |
+
+### Conexión con la ALU
+
+Los registros alimentan directamente la ALU, así que el resultado depende solo de los valores almacenados:
+
+```verilog
+alu alulab2 (.a(a), .b(b), .op(op), .out(out));
+```
 
 ## Identificación de operaciones mediante LED RGB
 
