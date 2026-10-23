@@ -8,7 +8,7 @@ module comb_selector (
 
     reg [3:0] index;
 
-    // Valor de arranque (simulacion y FPGA)
+    // Valor de arranque (simulación y FPGA)
     initial begin
         index = 4'd0;
     end
