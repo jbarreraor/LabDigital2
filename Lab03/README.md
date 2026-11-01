@@ -5,8 +5,13 @@
 
 ## Integrantes
 
-**Grupo de trabajo: 3**
-**Semestre:** 
+- Juan Sebastián Florez Payares
+- Juan Esteban Barrera Ortiz
+- Carlos Andrés Herrera Molina
+- Luciano Manrique Medina
+
+**Grupo de trabajo: 3**  
+**Semestre:** 2026-1
 
 ---
 
