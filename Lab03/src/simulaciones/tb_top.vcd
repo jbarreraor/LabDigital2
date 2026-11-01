@@ -1,5 +1,5 @@
 $date
-	Fri Oct 23 14:34:07 2026
+	Sun Nov  1 16:35:35 2026
 $end
 $version
 	Icarus Verilog
@@ -1007,8 +1007,8 @@ b111 x
 1"
 0_
 b0 !"
-b0 2
-b0 X
+b11 2
+b11 X
 b111 U
 b1 2"
 b1111 (
@@ -1311,6 +1311,8 @@ b1 *"
 b1 y
 0_
 b0 !"
+b0 2
+b0 X
 b11 U
 b1 2"
 b11 (

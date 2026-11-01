@@ -1,8 +1,5 @@
-// ====================================================================
-// Modulo: debouncer.v
-// Descripcion: Filtro antirrebote con sincronizador de 2 etapas y
-//              detector de flanco de subida (genera un pulso de 1 ciclo).
-// ====================================================================
+//Filtro antirrebote con sincronizador de 2 etapas y
+//detector de flanco de subida (genera un pulso de 1 ciclo).
 
 `timescale 1ns / 1ps
 
@@ -15,7 +12,7 @@ module debouncer #(
     output reg  btn_pulse // Pulso limpio de exactamente 1 ciclo de reloj
 );
 
-    // 1. Sincronizador de dos flip-flops para evitar metaestabilidad
+    // Sincronizador de dos flip-flops para evitar metaestabilidad
     reg sync_0;
     reg sync_1;
 
@@ -29,7 +26,7 @@ module debouncer #(
         end
     end
 
-    // 2. Temporizador antirrebote y generacion de pulso en flanco
+    // Temporizador antirrebote y generacion de pulso en flanco
     reg [$clog2(DEBOUNCE_CYCLES):0] timer;
     reg state;
 

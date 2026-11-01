@@ -50,7 +50,7 @@ module tb_top;
     initial clk = 0;
     always #50 clk = ~clk;
 
-    // Volcado de senales para GTKWave
+    // Volcado de señales para GTKWave
     initial begin
         $dumpfile("tb_top.vcd");
         $dumpvars(0, tb_top);

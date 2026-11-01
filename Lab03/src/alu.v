@@ -24,7 +24,7 @@ always @(*) begin
         3'b100: result = {4'b0000, (operand_a & operand_b)}; // AND
         3'b101: result = {4'b0000, (operand_a | operand_b)}; // OR
         3'b110: result = {4'b0000, (operand_a ^ operand_b)}; // XOR
-        3'b111: result = {4'b0000, !(operand_a & operand_b)}; // NAND
+        3'b111: result = {4'b0000, ~(operand_a & operand_b)}; // NAND
 
         default: result = 8'b0;                                         
 

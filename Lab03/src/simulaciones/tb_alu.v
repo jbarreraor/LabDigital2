@@ -205,20 +205,20 @@ module tb_alu;
             $display("OK: XOR");
 
         // =========================================
-        // PRUEBA DEL CODIGO SIN USO
+        // PRUEBA DE NAND
         // =========================================
 
-        // Prueba 14: codigo 111 sin uso -> resultado 0
-        operand_a = 4'd9;
-        operand_b = 4'd5;
+        // Prueba 14: NAND (A=1010, B=0110) -> ~(0010) = 1101 (13)
+        operand_a = 4'b1010;
+        operand_b = 4'b0110;
         operation = 3'b111;
         #1;
 
-        if (result !== 8'd0)
-            $fatal(1, "ERROR: codigo 111");
+        if (result !== 8'b00001101)
+            $fatal(1, "ERROR: NAND");
         else
-            $display("OK: codigo 111 devuelve 0");
-
+            $display("OK: NAND");
+            
         // =========================================
         // FIN DE LAS PRUEBAS
         // =========================================

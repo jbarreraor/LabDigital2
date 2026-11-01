@@ -1,11 +1,7 @@
-// ====================================================================
-// Modulo: display_tm1637.v
 // Descripcion: Controlador para display de 4 digitos y 7 segmentos TM1637.
 //              Convierte el resultado de 8 bits de la ALU (con signo)
 //              a formato decimal (o hex) y lo transmite mediante el
 //              protocolo serie de 2 hilos del TM1637.
-// ====================================================================
-
 `timescale 1ns / 1ps
 
 module display_tm1637 #(
