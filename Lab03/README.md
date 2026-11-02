@@ -214,14 +214,6 @@ Tal como lo pedía la guía, el  módulo `top.v` solo se limita a:
 3. Mantener el registro de selección de escritura `write_reg_sel[1:0]`, que avanza con `pulse_btn0`, y su decodificador hacia el LED RGB.
 4. Conectar el banco de registros, el selector de combinaciones, la ALU, el registro de retención y el controlador del TM1637.
 
-## Interfaz de usuario
-
-### Switches
-### Botones
-### LEDs
-### LED RGB
-### Display TM1637
-
 ## Estrategia de visualización
 El sistema de visualización se divide en 3 partes: display de 7 segmentos de 4 bits, LEDs monocromáticos y LED RGB.
 
@@ -255,8 +247,80 @@ Ahora, si operamos el registro 2 = 5 y el registro 1 = 10 como resta, el display
 
 ## Simulaciones
 
-### Testbench
-### Evidencia GTKWave
+### ALU
+Para comenzar, se simula el funcionamiento de la ALU, dentro del codigo se incluye una verificación por medio de la consola que revisa cada una de las operaciones de la ALU, se puede ver en [tb_alu.v](src/simulaciones/tb_alu.v) 
+
+![Verificación por consola del funcionamiento de la ALU](img/alu_terminal.png)
+
+Sin embargo, la verificación también se hizo de forma manual, la salida del testbench en gtkwave fue la siguiente:
+
+![Salida del testbench del funcionamiento de la ALU](img/alu_gtk.png)
+
+De forma sencilla se probaron todos los casos de la ALU, las entradas siendo ambos operandos de 4 bits, la seleccion de operación por 3 bits (que ya se describió arriba), mientras que las salidas son el signo o el indicativo de si es negativo, además del resultado en si.
+
+### Banco de registros
+Nuevamente, para este caso, se realizan dos verificaciones, el testbench del banco de registros se encuentra en [tb_reg_bank.v](src/simulaciones/tb_reg_bank.v)
+En la verificación automatica por consola se verifica el funcionamiento correcto del banco de registros, en la siguiente imagen se observan las pruebas hechas:
+
+![Verificación por consola del funcionamiento del banco de registros](img/reg_bank_terminal.png).
+
+- Primero se comprueba que si las entradas al banco de registros son todas 0, que los registros en efecto permanecen en 0.
+- Luego se escriben valores distintos en cada registro, se accede a cada uno, se escribe un valor, y luego se comparan con los resultados esperados para ver que la escritura fue correcta.
+- Luego, por medio de la seleccion de que registros se van a utilizar/leer, se comprueba que en efecto salen los valores utilizados al mismo tiempo en el operando a y el operando b.
+- Ahora, se bloquea el write_enable, y se intenta cambiar el valor de los registros con esa entrada en 0 (esperando los flancos de subida) se comprueba que en efecto, con write_enable en 0 nunca cambian los valores.
+- Por ultimo se realiza otra lectura simulatanea de registros pero con valores actualizados.
+
+Ahora se observa el resultado de la simulación en GTKWAVE.
+
+![Salida del testbench del funcionamiento del banco de registros](img/reg_bank_gtk.png)
+
+### Selector de combinación de registros
+
+Para esta simulación se siguió la misma estrategia de los 2 anteriores, el testbench se puede observar en [tb_comb_selector.v](src/simulaciones/tb_comb_selector.v).
+
+![Verificación por consola del funcionamiento del selector de combinación entre registros](img/comb_selector_terminal.png).
+
+Como se observa en la verificación por consola, se revisa que, de acuerdo a la asignación de cada led a cada registro, dependiendo de en que posición de la rotación se encuentre, en efecto se enciendan los LEDS indicados.
+Además, se comprueba que tras 16 pulsaciones del boton selector de combinaciones, se vuelva a la configuracion inicial. La salida en GTKWAVE se observa en la siguiente imagen.
+
+![Salida del testbench del funcionamiento del selector de combinación entre registros](img/comb_selector_gtk.png)
+
+### Display
+
+Para el display se usó la misma estrategia: verificación por consola y revisión en GTKWave. El testbench se encuentra en [tb_display_tm1637.v](src/simulaciones/tb_display_tm1637.v) y, para que la simulación no tarde demasiado, se aceleran los temporizadores del módulo (frecuencias de reloj y de bit más bajas).
+
+Como no hay un TM1637 real en la simulación, el testbench incluye un monitor que hace de receptor: detecta la condición de inicio y de parada del protocolo, lee cada bit en el flanco de subida de `scl` y guarda los bytes recibidos en una cola. Cada actualización del display llega como una trama de 7 bytes: el comando de datos (`0x40`), el comando de dirección (`0xC0`), los 4 dígitos y el comando de control (`0x8A`, display encendido con el brillo configurado).
+
+![Verificación por consola del funcionamiento del display](img/display_terminal.png)
+
+- Se comprueba primero que los bytes de comando y control sean los esperados en cada trama.
+- Con valor 0 en decimal, se espera `   0`, es decir, tres dígitos apagados y un `0` (`00 00 00 3F`).
+- Con 225 en decimal (el máximo de una multiplicación 15*15) se espera ` 225` (`00 5B 5B 6D`).
+- Con el resultado negativo `-4` (llega como `0xFC` con el indicador `negative` en 1) se espera `  -4`, con el signo menos en el tercer dígito (`00 00 40 66`).
+- Por último, con `0xA5` en modo hexadecimal se espera `  A5` (`00 00 77 6D`).
+
+Ahora se observa el resultado de la simulación en GTKWAVE, donde se ve cómo cambia `value` (0, 225, 252 y 165) y cómo `current_byte` va enviando los bytes de cada trama por `sda` y `scl`.
+
+![Salida del testbench del funcionamiento del display](img/display_gtk.png)
+
+### Top
+
+Finalmente, se verifica el sistema completo integrado en `top.v`, con el testbench [tb_top.v](src/simulaciones/tb_top.v). Se simula la pulsación de los botones con una tarea y se aceleran los tiempos de antirrebote y del display para no esperar tanto.
+
+![Verificación por consola del funcionamiento del sistema completo](img/top_terminal.png)
+
+La prueba sigue el uso real del sistema, en cinco fases:
+
+- Fase 1: se escriben los valores 12, 5, 15 y 3 en R0, R1, R2 y R3 con BTN0 (cambia de registro) y BTN1 (escribe), y se comprueba cada registro, además del color del LED RGB que indica el registro seleccionado.
+- Fase 2: con BTN2 se avanza a la combinación R0, R1 y se comprueba que los operandos son A=12 y B=5 y que los LEDs encendidos son LED0 y LED1.
+- Fase 3: se selecciona la suma y se verifica que el display no cambia hasta presionar BTN3; al presionarlo, el resultado pasa a 17.
+- Fase 4: se verifica la conservación del resultado. Se cambia la operación a multiplicación y luego la combinación de operandos, y el display sigue en 17. Solo al presionar BTN3 se actualiza a 180 (12 * 15).
+- Fase 5: se recorren combinaciones con BTN2 hasta A=R1 (5) y B=R0 (12), y se hace la resta, que da -7. Se comprueba que el resultado sea `11111001` (complemento a 2) y que `displayed_negative` quede en 1.
+
+Ahora se observa el resultado en GTKWAVE. Se ve que `alu_result` cambia en cuanto cambian los operandos o la operación, mientras que `displayed_result` solo cambia cuando se presiona BTN3 (0, 17, 180 y 249, que es -7 en complemento a 2).
+
+![Salida del testbench del funcionamiento del sistema completo](img/top_gtk.png)
+
 
 ## Implementación en FPGA
 
