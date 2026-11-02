@@ -291,7 +291,7 @@ Para el display se usó la misma estrategia: verificación por consola y revisi�
 
 Como no hay un TM1637 real en la simulación, el testbench incluye un monitor que hace de receptor: detecta la condición de inicio y de parada del protocolo, lee cada bit en el flanco de subida de `scl` y guarda los bytes recibidos en una cola. Cada actualización del display llega como una trama de 7 bytes: el comando de datos (`0x40`), el comando de dirección (`0xC0`), los 4 dígitos y el comando de control (`0x8A`, display encendido con el brillo configurado).
 
-![Verificación por consola del funcionamiento del display](img/display_terminal.png)
+![Verificación por consola del funcionamiento del display](img/display_tm1637_terminal.png)
 
 - Se comprueba primero que los bytes de comando y control sean los esperados en cada trama.
 - Con valor 0 en decimal, se espera `   0`, es decir, tres dígitos apagados y un `0` (`00 00 00 3F`).
@@ -301,7 +301,7 @@ Como no hay un TM1637 real en la simulación, el testbench incluye un monitor qu
 
 Ahora se observa el resultado de la simulación en GTKWAVE, donde se ve cómo cambia `value` (0, 225, 252 y 165) y cómo `current_byte` va enviando los bytes de cada trama por `sda` y `scl`.
 
-![Salida del testbench del funcionamiento del display](img/display_gtk.png)
+![Salida del testbench del funcionamiento del display](img/display_tm1637_gtk.png)
 
 ### Top
 
