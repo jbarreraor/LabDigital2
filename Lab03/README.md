@@ -260,9 +260,11 @@ Ahora, si operamos el registro 2 = 5 y el registro 1 = 10 como resta, el display
 
 ## Implementación en FPGA
 
+### Implementación en FPGA
+
 Se realizó la implementación del diseño modular de la ALU y el banco de registros en la FPGA, integrando los diferentes módulos desarrollados y verificando su correcto funcionamiento mediante pruebas en hardware. En el siguiente video se presenta una demostración del proceso de implementación y los resultados obtenidos.
 
-<video src="img/img_readme/implementacionfpga%20(1).mp4" controls width="100%"></video>
+[▶ Ver video de implementación en FPGA](https://github.com/jbarreraor/LabDigital2/blob/main/Lab03/img/img_readme/implementacionfpga%20%281%29.mp4)
 ### Evidencia
 
 ## Análisis de resultados
