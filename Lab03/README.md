@@ -74,10 +74,10 @@ La ALU opera sobre dos operandos de 4 bits (`operand_a` y `operand_b`) que entre
 | `001`     | Resta          | $A - B$                     | 8 bits ($-15$ a $15$)   | Los negativos se representan en complemento a dos con extensión de signo a 8 bits. Se activa `negative = 1` si $A < B$. |
 | `010`     | Multiplicación | $A \times B$                | 8 bits (máx. 225)       | Es la operación que define el ancho de 8 bits ($15 \times 15 = 225$). |
 | `011`     | Módulo         | $A \bmod B$                 | 8 bits                  | Si $B = 0$, devuelve $0$ para evitar indeterminaciones. |
-| `100`     | AND            | $A \,\&\, B$                | 8 bits                  | Operación bit a bit. |
-| `101`     | OR             | $A \mid B$                  | 8 bits                  | Operación bit a bit. |
-| `110`     | XOR            | $A \oplus B$                | 8 bits                  | Operación bit a bit. |
-| `111`     | NAND           | $\sim(A \,\&\, B)$          | 8 bits                  | Operación bit a bit invertida. |
+| `100` | AND  | $A \land B$              | 8 bits | Operación bit a bit. |
+| `101` | OR   | $A \mid B$                | 8 bits | Operación bit a bit. |
+| `110` | XOR  | $A \oplus B$              | 8 bits | Operación bit a bit. |
+| `111` | NAND | $\overline{A \land B}$   | 8 bits | Operación bit a bit invertida. |
 ---
 
 ### Flujo del usuario
