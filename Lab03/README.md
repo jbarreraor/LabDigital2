@@ -333,6 +333,20 @@ Se realizó la implementación del diseño modular de la ALU y el banco de regis
 
 ## Análisis de resultados
 
+Los resultados de la simulación coincidieron con lo esperado en todos los módulos. La ALU dio el resultado correcto en sus 8 operaciones, el banco de registros guardó y leyó bien los datos (y no escribió cuando `write_enable` estaba en 0), y el selector recorrió las 16 combinaciones y volvió al inicio tras 16 pulsaciones.
+
+El display siempre mostró el valor indicado de acuerdo a los operandos y la operación utilizada, los cambios de valores en operandos o de que operación se ejecuta solo ocurren cuando se presiona el botón indicado.
+
+También se probó la resta negativa: 5 - 12 da `11111001`, que en 8 bits es 249 y representa -7 en complemento a 2. Con la bandera `negative` en 1, el display muestra el signo menos y el 7, cosa que también funcionó en la implementación, donde el -6 se vio representado de forma correcta.
+
+De forma general, nuevamente, el funcionamiento del sistema fue correcto.
+
 ## Conclusiones
 
+- La implementación de la ALU de 4 bits, el banco de registros y el selector de combinaciones permitió armar un sistema completo y modular, donde cada módulo se probó por separado y `top.v` solo se encarga de conectarlos.
+- La simulación con GTKWave permitió verificar el diseño antes de pasar a la FPGA, incluyendo casos particulares como la multiplicación máxima (15 x 15 = 225) y la resta con resultado negativo en complemento a 2.
+- La implementación en la Zybo Z7 permitió comprobar el funcionamiento en hardware, usando switches y pulsadores para cargar los datos y elegir la operación, LEDs y LED RGB para ver los registros activos, y el display TM1637 para mostrar el resultado, que se mantiene hasta que se presiona BTN3 de nuevo.
+
 ## Referencias
+
+[1] Digilent, “Zybo Z7 Reference Manual,” Digilent Inc. [En línea]. Disponible en: https://digilent.com/reference/programmable-logic/zybo-z7/reference-manual.
