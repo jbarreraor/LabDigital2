@@ -226,7 +226,7 @@ Para el RGB, se le asignó como función visualizar el registro que se está uti
 | Rojo | Registro 3 |
 | Cian | Registro 4 |
 
-Recordar que el cambio de registro se realiza con el botón asignado número 2.
+Recordar que el cambio de registro se realiza con el botón asignado (btn0).
 
 Para los LEDs monocromáticos que se ubican arriba de los switches de selección, se les asignó la función de mostrar qué registros se están operando. Por ejemplo, si se encienden los dos primeros LEDs de derecha a izquierda, se estarán operando los registros 0 y 1. Ahora, como se implementan operaciones en las cuales importa el orden de selección de los registros, si se vuelve a presionar el botón que alterna entre registros, este hará un barrido de todas las combinaciones entre registros posibles. Es decir, la primera vez que se vean encendidos los dos LEDs antes mencionados se hará la siguiente operación: «Registro 1 operación seleccionada Registro 2». Entonces, la segunda vez que estos LEDs sean encendidos, se estará realizando la operación en orden inverso de los registros: «Registro 2 operación seleccionada Registro 1».
 
