@@ -68,17 +68,16 @@ Para saber en todo momento en qué registro se va a escribir sin ocupar los LEDs
 
 La ALU opera sobre dos operandos de 4 bits (`operand_a` y `operand_b`) que entrega el banco de registros, y la operación se elige con los tres bits menos significativos de los switches (`SW[2:0]`):
 
-| `SW[2:0]` | Operación      | Función lógica / aritmética | Ancho de salida          | Manejo de signo / casos borde |
-| :-------: | :------------: | :-------------------------- | :----------------------: | :---------------------------- |
-| `000`     | Suma           | $A + B$                     | 8 bits         | Sin signo. |
-| `001`     | Resta          | $A - B$                     | 8 bits ($-15 \dots 15$)  | Los negativos sales de hacer el complemento a dos con extensión de signo a 8 bits y se activa la bandera `negative = 1` si $A < B$. |
-| `010`     | Multiplicación | $A \times B$                | 8 bits (máx. 225)        | Es la operación que define el ancho de 8 bits ($15 \times 15 = 225$). |
-| `011`     | Módulo         | $A \bmod B$                 | 8 bits                   | Si $B = 0$, devuelve $0$ para evitar indeterminaciones. |
-| `100`     | AND            | $A \,\&\, B$                | 8 bits                   | Operación bit a bit|
-| `101`     | OR             | $A \mid B$                  | 8 bits                   | Operación bit a bit. |
-| `110`     | XOR            | $A \oplus B$                | 8 bits                   | Operación bit a bit. |
-| `111`     | NAND           | $\sim(A \,\&\, B)$          | 8 bits                   | Operación bit a bit invertida. |
-
+| `SW[2:0]` | Operación      | Función lógica / aritmética | Ancho de salida         | Manejo de signo / casos borde |
+|:---------:|----------------|-----------------------------|:-----------------------:|-------------------------------|
+| `000`     | Suma           | $A + B$                     | 8 bits                  | Sin signo. |
+| `001`     | Resta          | $A - B$                     | 8 bits ($-15$ a $15$)   | Los negativos se representan en complemento a dos con extensión de signo a 8 bits. Se activa `negative = 1` si $A < B$. |
+| `010`     | Multiplicación | $A \times B$                | 8 bits (máx. 225)       | Es la operación que define el ancho de 8 bits ($15 \times 15 = 225$). |
+| `011`     | Módulo         | $A \bmod B$                 | 8 bits                  | Si $B = 0$, devuelve $0$ para evitar indeterminaciones. |
+| `100`     | AND            | $A \,\&\, B$                | 8 bits                  | Operación bit a bit. |
+| `101`     | OR             | $A \mid B$                  | 8 bits                  | Operación bit a bit. |
+| `110`     | XOR            | $A \oplus B$                | 8 bits                  | Operación bit a bit. |
+| `111`     | NAND           | $\sim(A \,\&\, B)$          | 8 bits                  | Operación bit a bit invertida. |
 ---
 
 ### Flujo del usuario
@@ -110,6 +109,7 @@ A continuación, con ayuda de IA, se presenta el diagrama de bloques del diseño
 Debido a que pulsadores mecánicos presentan rebotes que pueden durar entre $5\text{ ms}$ y $20\text{ ms}$ y como la FPGA trabaja con un reloj de $125\text{ MHz}$ ($8\text{ ns}$ de periodo), con una sola pulsación se pueden generar falsas activaciones en el sistema.
 
 Para evitarlo se implementó el módulo `debouncer.v`, que se instancia cuatro veces, una por botón.
+
 ---
 
 ### Banco de registros (`reg_bank.v`)
