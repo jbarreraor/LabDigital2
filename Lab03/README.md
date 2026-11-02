@@ -95,7 +95,7 @@ La ALU opera sobre dos operandos de 4 bits (`operand_a` y `operand_b`) que entre
 
 Para este laboratorio el objetivo era usar el módulo superior (`top.v`) solamente como enrutador de señales y el puente encargado de integrar todos los demás módulos. Donde cada modulo tiene su propia lógica y cada uno se validó por medio de testbench.
 
-### 2.1. Diagrama de bloques del sistema
+### Diagrama de bloques del sistema
 A continuación, con ayuda de IA, se presenta el diagrama de bloques del diseño realizado.
 
 ![Diagrama de bloques del sistema](./img/img_readme/diagrama_bloques_lab03.svg)
