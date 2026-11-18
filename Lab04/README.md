@@ -1,7 +1,4 @@
 
-
-https://github.com/user-attachments/assets/b3d349ea-d11d-4b71-8213-d810e1f15307
-
 # Laboratorio 04
 ## Lab04: Implementación de un SoC Zynq-7000 mediante Vivado y Vitis
 
