@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/b3d349ea-d11d-4b71-8213-d810e1f15307
+
 # Laboratorio 04
 ## Lab04: Implementación de un SoC Zynq-7000 mediante Vivado y Vitis
 
@@ -112,6 +116,10 @@ El funcionamiento del sistema se verificó mediante los botones y LEDs disponibl
 De acuerdo con el comportamiento establecido en la guía, los LEDs presentan un parpadeo cuando no se presiona ningún botón. Al mantener presionado uno de los botones, el LED correspondiente permanece encendido hasta que se libera.
 
 A continuación se presenta el siguiente video de demostración del circuito: 
+
+
+
+https://github.com/user-attachments/assets/1d0461c3-8136-4ee4-95df-060502545810
 
 
 ### Comportamiento del sistema
